@@ -23,3 +23,8 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+    - name: Publish HealthChecks.Extensions.AzureSearch
+      uses: brandedoutcast/publish-nuget@v2.5.2
+      with:
+          PROJECT_FILE_PATH: HealthChecks.Extensions.AzureSearch/HealthChecks.Extensions.AzureSearch.csproj
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
