@@ -5,7 +5,8 @@ namespace HealthChecks.Extensions.AzureSearch
 {
     public class AzureSearchHealthCheckOptions
     {
-        public string Name { get; }
+        public string HealthCheckName { get; } = "Azure search healthcheck";
+
         public int ThresholdUsagePercentage { get; }
         public ISearchIndexClient SearchIndexClient { get; }
         public ISearchServiceClient SearchServiceClient { get; }
@@ -31,7 +32,6 @@ namespace HealthChecks.Extensions.AzureSearch
                 throw new ArgumentOutOfRangeException(nameof(thresholdUsagePercentage), $"percentage should be between {min} and {max}");
             }
 
-            Name = "Azure search healthcheck";
             SearchIndexClient = searchIndexClient;
             SearchServiceClient = searchServiceClient;
             ThresholdUsagePercentage = thresholdUsagePercentage;

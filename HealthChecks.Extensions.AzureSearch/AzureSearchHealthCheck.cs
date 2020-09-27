@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using HealthChecks.Extensions.AzureSearch.Models;
 using Microsoft.Azure.Search;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 

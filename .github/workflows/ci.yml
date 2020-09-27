@@ -28,3 +28,8 @@ jobs:
       with:
           PROJECT_FILE_PATH: HealthChecks.Extensions.AzureSearch/HealthChecks.Extensions.AzureSearch.csproj
           NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+    - name: Publish HealthChecks.Extensions.AzureWebjob
+      uses: brandedoutcast/publish-nuget@v2.5.2
+      with:
+          PROJECT_FILE_PATH: HealthChecks.Extensions.AzureWebjob/HealthChecks.Extensions.AzureWebjob.csproj
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}

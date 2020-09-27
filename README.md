@@ -5,7 +5,8 @@ Additional net core healthchecks extensions auto-published to nuget.org on commi
 ```
 
 >
-> - Azure Search (v10)
+> - Azure Search
+> - Azure Webjob
 >
 
 **`Tools`** : vs19, net core 3.1

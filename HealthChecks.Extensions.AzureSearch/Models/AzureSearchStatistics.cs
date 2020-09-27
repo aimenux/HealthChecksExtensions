@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace HealthChecks.Extensions.AzureSearch
+namespace HealthChecks.Extensions.AzureSearch.Models
 {
     public class AzureSearchStatistics
     {
