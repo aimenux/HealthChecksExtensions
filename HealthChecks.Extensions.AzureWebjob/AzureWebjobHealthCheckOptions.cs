@@ -10,17 +10,17 @@ namespace HealthChecks.Extensions.AzureWebjob
 
         public IHttpClientFactory HttpClientFactory { get; }
 
-        public AzureWebjobCredentials AzureWebjobCredentials { get; }
+        public AzureWebjobSettings AzureWebjobSettings { get; }
 
         public Predicate<AzureWebjobDetails> HealthCheckPredicate { get; }
 
         public AzureWebjobHealthCheckOptions(
             IHttpClientFactory httpClientFactory,
-            AzureWebjobCredentials azureWebjobCredentials,
+            AzureWebjobSettings azureWebjobSettings,
             Predicate<AzureWebjobDetails> healthCheckPredicate)
         {
             HttpClientFactory = httpClientFactory;
-            AzureWebjobCredentials = azureWebjobCredentials;
+            AzureWebjobSettings = azureWebjobSettings;
             HealthCheckPredicate = healthCheckPredicate;
         }
     }

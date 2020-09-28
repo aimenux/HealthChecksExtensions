@@ -19,7 +19,7 @@ namespace HealthChecks.Extensions.AzureWebjob
         {
             _options = options;
             _httpClient = _options.HttpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri(_options.AzureWebjobCredentials.Url);
+            _httpClient.BaseAddress = new Uri(_options.AzureWebjobSettings.Url);
             _httpClient.DefaultRequestHeaders.Authorization = GetAuthenticationHeader();
         }
 
@@ -32,17 +32,16 @@ namespace HealthChecks.Extensions.AzureWebjob
                     return new HealthCheckResult(context.Registration.FailureStatus, description: $"{nameof(AzureWebjobHealthCheck)} execution is cancelled.");
                 }
 
-                var webjobName = _options.AzureWebjobCredentials.Name;
-
+                var settings = _options.AzureWebjobSettings;
                 var details = await GetWebJobDetailsAsync();
                 if (details == null)
                 {
-                    return HealthCheckResult.Degraded($"Unable to get azure webjob details for {webjobName}");
+                    return HealthCheckResult.Degraded($"Unable to get azure webjob details for {settings}");
                 }
 
                 return _options.HealthCheckPredicate(details) 
-                    ? HealthCheckResult.Healthy($"Azure webjob {webjobName} is up")
-                    : HealthCheckResult.Unhealthy($"Azure webjob {webjobName} is down");
+                    ? HealthCheckResult.Healthy($"Azure webjob {settings} is up")
+                    : HealthCheckResult.Unhealthy($"Azure webjob {settings} is down");
             }
             catch (Exception ex)
             {
@@ -52,22 +51,7 @@ namespace HealthChecks.Extensions.AzureWebjob
 
         private async Task<AzureWebjobDetails> GetWebJobDetailsAsync()
         {
-            var webjobName = _options.AzureWebjobCredentials.Name;
-            var webjobType = _options.AzureWebjobCredentials.Type;
-            if (webjobType != null)
-            {
-                return await GetWebJobDetailsAsync(webjobName, webjobType.ToString());
-            }
-
-            var getTriggeredDetailsTask = GetWebJobDetailsAsync(webjobName, nameof(AzureWebjobType.Triggered));
-            var getContinuousDetailsTask = GetWebJobDetailsAsync(webjobName, nameof(AzureWebjobType.Continuous));
-            await Task.WhenAll(getTriggeredDetailsTask, getContinuousDetailsTask);
-            return getTriggeredDetailsTask.Result ?? getContinuousDetailsTask.Result;
-        }
-
-        private async Task<AzureWebjobDetails> GetWebJobDetailsAsync(string webjobName, string webjobType)
-        {
-            var webjobRelativeUrl = BuildRelativeWebjobUrl(webjobName, webjobType);
+            var webjobRelativeUrl = _options.AzureWebjobSettings.RelativeWebjobUrl;
 
             using (var httpResponseMessage = await _httpClient.GetAsync(webjobRelativeUrl))
             {
@@ -84,15 +68,10 @@ namespace HealthChecks.Extensions.AzureWebjob
 
         private AuthenticationHeaderValue GetAuthenticationHeader()
         {
-            var credentials = _options.AzureWebjobCredentials;
-            var bytes = Encoding.ASCII.GetBytes($"{credentials.UserName}:{credentials.Password}");
+            var settings = _options.AzureWebjobSettings;
+            var bytes = Encoding.ASCII.GetBytes($"{settings.UserName}:{settings.Password}");
             var base64 = Convert.ToBase64String(bytes);
             return new AuthenticationHeaderValue("Basic", base64);
-        }
-
-        private static string BuildRelativeWebjobUrl(string webjobName, string webjobType)
-        {
-            return $"/api/{webjobType}jobs/{webjobName}".ToLower();
         }
     }
 }
